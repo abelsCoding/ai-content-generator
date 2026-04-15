@@ -1,0 +1,6 @@
+site_name: My Docs
+
+nav:
+  - Home:index.md
+  - Products:
+      - Smart Fitness Watch: smart-fitness-watch.md

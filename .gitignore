@@ -11,7 +11,7 @@ __pycache__/
 .DS_Store
 
 # MkDocs build
-site/
+site/site
 
 # Env files
 .env
