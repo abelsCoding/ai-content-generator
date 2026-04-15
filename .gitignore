@@ -1,0 +1,20 @@
+# Node
+node_modules/
+
+# n8n temp files
+.n8n/
+
+# Python
+__pycache__/
+
+# Mac
+.DS_Store
+
+# MkDocs build
+site/
+
+# Env files
+.env
+
+# Logs
+*.log
