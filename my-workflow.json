@@ -1,0 +1,169 @@
+{
+  "name": "My workflow 3",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "generate-content",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "e196ec84-3b54-402d-bf0c-1394abb44bc8",
+      "name": "Webhook",
+      "webhookId": "f44c917f-7008-49f0-9ab5-c50e748d220e"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d73e3ba4-a10e-4790-9a17-340980698ad6",
+              "name": "=product",
+              "value": "={{$json.body.product}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        208,
+        0
+      ],
+      "id": "fdc2dd7a-7e9e-451b-884c-18c1c467eddb",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "jsCode": "const product = $json.product;\n\nreturn [\n  {\n    json: {\n      product,\n      content: `\n### Version 1 — Professional\nA high-quality ${product} designed for performance and reliability.\n\n### Version 2 — Casual\nLooking for a solid ${product}? This one gets the job done.\n\n### Version 3 — Persuasive\nDon't miss out on this amazing ${product} — upgrade your experience today!\n`\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        416,
+        0
+      ],
+      "id": "7ba89614-59b7-457c-85d7-4477ca906237",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "jsCode": "const product = $json.product;\nconst content = $json.content;\n\nconst markdown = `\n# ${product}\n\n${content}\n\n---\nGenerated on: ${new Date().toISOString()}\n`;\n\nreturn [\n  {\n    json: {\n      fileName: product.toLowerCase().replace(/\\s+/g, \"-\") + \".md\",\n      markdown: markdown\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        624,
+        0
+      ],
+      "id": "4676c52d-b021-4ad2-a35a-9716822d87b8",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "=/Users/abahochoga/Documents/ai-content-generator/site/docs/{{$binary.data.fileName}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1.1,
+      "position": [
+        1040,
+        0
+      ],
+      "id": "be8683ba-3deb-4e79-8950-047e7d7065a3",
+      "name": "Read/Write Files from Disk"
+    },
+    {
+      "parameters": {
+        "jsCode": "const content = $json.markdown;\n\nreturn [\n  {\n    json: {\n      fileName: $json.fileName\n    },\n    binary: {\n      data: {\n        data: Buffer.from(content).toString('base64'),\n        mimeType: 'text/markdown',\n        fileName: $json.fileName,\n      }\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        832,
+        0
+      ],
+      "id": "9f2632c6-93c4-45bb-b237-30b17d08eed4",
+      "name": "Code in JavaScript2"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript2": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "4f9c36ad-5259-49f6-8caa-aff94dc52224",
+  "meta": {
+    "instanceId": "a57000a75e45fadcecb8102b4b09f14770fb9ef2c1dc12638c97c12d14d2e17e"
+  },
+  "id": "oAHFi5ewC3hwIPFi",
+  "tags": []
+}
